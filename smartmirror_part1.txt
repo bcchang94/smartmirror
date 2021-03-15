@@ -8,7 +8,6 @@
 - weather
 	- use 'requests' module probably
 	- as a starting point, it's probably better to just get the current temperature and whatnot and deal with the rest later (unless, of course, it's super simple to get everything you want at once)
-	- should be a pretty simple curl command?
 	- Goal:
 		- make a function that gets the temperature from the www
 		- print it to the console
