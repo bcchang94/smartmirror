@@ -1,0 +1,5 @@
+Use OpenWeather API
+Use https://erikflowers.github.io/weather-icons/ for weather icons
+
+ Process openweather_icon_mapping.txt into csv file
+    Associate weather ID to corresponding character hex code
