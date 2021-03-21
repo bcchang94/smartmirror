@@ -1,0 +1,38 @@
+'''
+Author: Brandon Chang
+'''
+
+import os #has a function that tells you what's in a directory
+
+if os.path.isdir('in') == False:
+    print('No "in" folder with BOMs detected')
+    
+else:   
+    exclusionList = ['P00318', 'P17695']
+
+    with open('out.csv', 'w') as outFile:
+        outFile.write('Cable,Part Number,Quantity\n') #add headers to file
+        for item in os.listdir('in'): #check files within listed directory
+            with open("in/"+item, 'r')  as inFile: #open files at directory in, store as f
+                print('Processing ' + item)
+                line = inFile.readline() #skip first line
+                line = inFile.readline() #assigned second line
+                cols = line.split('","') #creates an array for each column
+                part = cols[1].strip('"')
+                outFile.write(part + '\n') #write part number on its own row
+                line = inFile.readline() #assigned third row
+                while line != '': #run while there's still content
+                    cols = line.split('","') #creates an array for each column, splits whereever it see ","
+                    refdes = cols[10].strip('"') #look at Ref Des column & gets rid of extra quotes that GA added for some reason
+                    if refdes == '': #check if any text in Ref Des column
+                        number = cols[1].strip('"') #grab part number
+                        qty = cols[2].strip('"') #grab qty
+                        if number in exclusionList or '.' in qty:
+                            break
+                        outFile.write(",{},{}\n".format(number, qty))
+                    line = inFile.readline()
+            outFile.write('\n')
+print('Done')
+os.system('PAUSE')
+            
+        
