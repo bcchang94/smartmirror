@@ -20,7 +20,7 @@ else:
                     hexChar = cols[1]
                     outFile.write('{},{}\n'.format(OWID,hexChar))
                     line = inFile.readline()
-                    if '\n' in line:
+                    if line == '\n':
                         line = inFile.readline()
 print('Done')
 os.system('PAUSE')
