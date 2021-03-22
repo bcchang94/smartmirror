@@ -7,7 +7,7 @@ import os
 if os.path.isdir('Functions/in_API Mapping') == False:
     print('No "in" folder detected')
 else:
-    with open('sortedHexCode.csv', 'w') as outFile:
+    with open('processAPIMapping.csv', 'w') as outFile:
         outFile.write('OpenWeather ID, Hex Code Character\n') #add headers to file
         for item in os.listdir('Functions/in_API Mapping'):
             with open('Functions/in_API Mapping/'+item, 'r') as inFile:
