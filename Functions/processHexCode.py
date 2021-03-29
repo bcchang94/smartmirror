@@ -4,27 +4,13 @@ Author: Brandon Chang
 
 import os
 
-if os.path.isdir('Functions/in_SortedHexCode') == False:
+if os.path.isdir('Functions/in_ProcessHexCode') == False:
     print ('No "in" folder detected')
 else:
     with open('sortHexCode.csv', 'w') as outFile:
         outFile.write('OpenWeather ID, Day Hex Code, Night Hex Code\n') #add headers to file
-        for item in os.listdir('Functions/in_SortedHexCode'):
-            with open('Functions/in_SortedHexCode/' +item, 'r') as inFile:
+        for item in os.listdir('Functions/in_ProcessHexCode'):
+            with open('Functions/in_ProcessHexCode/' +item, 'r') as inFile:
                 print('Processing ' + item)
-                #line_A = inFile.readline()
-                #line_A = inFile.readline()
-                #openWeatherID_A = line_A[0][-3:]
-                #hexCodeChar_A = line_A[1]
-                #line_B = inFile.readline()
-                #openWeatherID_B = line_B[0][-3:]
-                #hexCodeChar_B = line_B[1]
-                row_count = len(list(inFile)) #determine number of rows in csv file
-                List = [None] * (row_count-1) #-1 to exclude header
-                line = inFile.readline()
-                print(line)
-                for row in range(row_count-1):
-                    List[row] = line
-                    
-                    line = inFile.readline()
-                    #print(List[0])
+                contents = inFile.read().split('\n') #read in whole file and split at \n
+                contents_formatted = contents.split(',') #split element in array into two strings using comma
