@@ -5,7 +5,7 @@ Author: Brandon Chang
 import requests, json
 
 #API Key via OpenWeatherMap
-api_key = 'bc78c5a89ad74cd2b1f85071d5cf357d'
+api_key = ''
 
 #base URL for API calls
 base_URL = 'https://api.openweathermap.org/data/2.5/onecall?'
