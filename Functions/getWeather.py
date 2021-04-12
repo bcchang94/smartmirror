@@ -2,10 +2,16 @@
 Author: Brandon Chang
 '''
 
-import requests, json
+import requests, json, os
 
+if os.path.exists('Functions/api_keys.json') == False:
+    print('No API Key json file detected')
+
+with open('Functions/api_keys.json', 'r') as inFile:
+    api_list = json.loads(inFile.read())
+    
 #API Key via OpenWeatherMap
-api_key = ''
+api_key = api_list['openWeatherMap_API_Key']
 
 #base URL for API calls
 base_URL = 'https://api.openweathermap.org/data/2.5/onecall?'
