@@ -1,5 +1,6 @@
 '''
 Author: Brandon Chang
+Purpose: Formats csv OpenWeather mapped icons to json file, linking ID with daytime icon as first entry and nighttime icon as second entry
 '''
 
 import os

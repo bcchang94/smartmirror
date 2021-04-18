@@ -1,5 +1,6 @@
 '''
 Author: Brandon Chang
+Purpose: Converts OpenWeather icon mapping text file to csv file
 '''
 
 import os
