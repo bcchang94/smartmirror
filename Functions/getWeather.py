@@ -1,34 +1,89 @@
 '''
 Author: Brandon Chang
+Purpose: This function retrieves weather information from OpenWeatherMap and returns current and forecast weather reports
 '''
 
 import requests, json, os
+from datetime import datetime
 
-if os.path.exists('Functions/api_keys.json') == False:
-    print('No API Key json file detected')
+def getWeather():
+    if os.path.exists('Functions/api_keys.json') == False:
+        print('No API Key json file detected')
 
-with open('Functions/api_keys.json', 'r') as inFile:
-    api_list = json.loads(inFile.read())
+    with open('Functions/api_keys.json', 'r') as inFile:
+        api_list = json.loads(inFile.read())
+
+    if os.path.exists('Functions/weather_location.json') == False:
+        print('No Weather Location json file detected')
     
-#API Key via OpenWeatherMap
-api_key = api_list['openWeatherMap_API_Key']
+    with open('Functions/weather_location.json', 'r') as inFile:
+        weather_location = json.loads(inFile.read())
+        
+    #API Key via OpenWeatherMap
+    api_key = api_list['openWeatherMap_API_Key']
 
-#base URL for API calls
-base_URL = 'https://api.openweathermap.org/data/2.5/onecall?'
+    #base URL for API calls
+    base_URL = 'https://api.openweathermap.org/data/2.5/onecall?'
 
-#provide lat & long coordinates for city of interest
-lat = '33.4936'
-lon = '117.1484'
+    #provide lat & long coordinates for city of interest
+    lat = weather_location["latitude"]
+    lon = weather_location["longitude"]
 
-#provide city name
-city_name = 'Temecula, CA'
+    #provide city name
+    city_name = weather_location["city"] + ', ' + weather_location["state"]
 
-#desired excluded information from API request
-exclude = 'minutely'
+    #desired excluded information from API request
+    exclude = 'minutely,hourly'
 
-complete_URL = base_URL + 'lat=' + lat + '&lon=' + lon + '&units=imperial' + '&exclude=' + exclude + '&appid=' + api_key
+    complete_URL = base_URL + 'lat=' + lat + '&lon=' + lon + '&units=imperial' + '&exclude=' + exclude + '&appid=' + api_key
 
-api_response = requests.get(complete_URL)
+    api_response = requests.get(complete_URL)
 
-format_api_response = api_response.json()
-print(format_api_response)
+    formatted_api_response = api_response.json()
+
+    #create dictionary for function return
+    return_dict = {}
+
+    #entry in return_dict that has city name and state
+    return_dict["city_state"] = city_name
+
+    #retreive current weather information
+    current_dict = {
+        "current_temp"          : formatted_api_response["current"]["temp"],
+        "current_feels_like"    : formatted_api_response["current"]["feels_like"],
+        "current_humidity"      : formatted_api_response["current"]["humidity"], #documented as a percentage without %
+        "current_weather_id"    : formatted_api_response["current"]["weather"][0]["id"],
+        "current_weather_main"  : formatted_api_response["current"]["weather"][0]["main"]   
+    }
+    #determine whether to use day or night weather icon by comparing current time to sunrise/sunset time
+    current_epoch = formatted_api_response["current"]["dt"]
+    sunrise_epoch = formatted_api_response["current"]["sunrise"]
+    sunset_epoch = formatted_api_response["current"]["sunset"]
+    if current_epoch >= sunrise_epoch and current_epoch <= sunset_epoch:
+        current_dict["current_icon"] = 'day'
+    else:
+        current_dict["current_icon"] = 'night'
+
+    #entry in return_dict that has current weather  
+    return_dict["current"] = current_dict
+    
+    #retreive daily weather forecast information (4 days)
+    #create list to index days in forecast
+    forecast_list = []
+    for day in range(0,5):
+        list_entry = {
+            "day_date"          : datetime.fromtimestamp(formatted_api_response["daily"][day]["dt"] + formatted_api_response["timezone_offset"]).strftime("%a"), #day of the week from epoch
+            "day_temp"          : formatted_api_response["daily"][day]["temp"]["day"],
+            "day_humidity"      : formatted_api_response["daily"][day]["humidity"], #documented as a percentage without %
+            "day_weather_id"    : formatted_api_response["daily"][day]["weather"][0]["id"],
+            "day_weather_main"  : formatted_api_response["daily"][day]["weather"][0]["main"],
+            "day_pop"           : formatted_api_response["daily"][day]["pop"] #documented as a decimal
+        }
+        forecast_list.append(list_entry)
+    #entry in return_dict that has forecast weather
+    return_dict["forecast"] = forecast_list
+    
+    return return_dict
+
+if __name__ == '__main__':
+    print(getWeather())
