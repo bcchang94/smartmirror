@@ -4,3 +4,6 @@ sortHexCode.csv
 processAPIMapping.csv
 api_keys.json
 weather_location.json
+.cache
+.spotipyoauthcache
+getSpotifyAuth.py
