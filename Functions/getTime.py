@@ -4,8 +4,14 @@ Purpose: This function returns the time
 '''
 
 from datetime import datetime
+from time import sleep
 
-def getTime():
+def timeLoop(var0,var1):
+    while True:
+        getTime(var0,var1)
+        sleep(1)
+
+def getTime(var0, var1):
     now = datetime.now()
     currentTime = now.strftime('%I:%M')
     currentHourString = now.strftime('%H')
@@ -17,8 +23,10 @@ def getTime():
         greeting = 'Good Afternoon'
     else:
         greeting = 'Good Evening'
-    
-    return currentTime, greeting
+
+    var0.set(currentTime)
+    var1.set(greeting)
+    #return currentTime, greeting
 
 if __name__ == '__main__':
     print(getTime())

@@ -5,21 +5,38 @@ Purpose: Main function to display information for smart mirror
 
 import tkinter as tk
 from PIL import ImageTk, Image
-from getDate import getDate
-from getTime import getTime
+from getDate import dateLoop
+from getTime import timeLoop
 from getWeather import getWeather
 from getSpotify import getSpotify
+import threading
+
+timeThread = None
+dateThread = None
 
 def greeting_frame(parent):
-    time = getTime()
-    display_time = tk.Label(parent, text = time[0], font = 'Exo\ 2\ Light 72', bg = 'black', fg = 'white')
+    global timeThread, dateThread
+    var0 = tk.StringVar()
+    var1 = tk.StringVar()
+    var2 = tk.StringVar()
+
+    # Label for time and greeting
+    display_time = tk.Label(parent, textvariable = var0, font = 'Exo\ 2\ Light 72', bg = 'black', fg = 'white')
     display_time.pack(fill = 'x')
-    display_greeting = tk.Label(parent, text = time[1], font = 'Exo\ 2\ Light 36', bg = 'black', fg = 'white')
+    display_greeting = tk.Label(parent, textvariable = var1, font = 'Exo\ 2\ Light 36', bg = 'black', fg = 'white')
     display_greeting.pack(fill = 'x')
     
-    date = getDate()
-    display_date = tk.Label(parent, text = date, font = 'Exo\ 2\ Light 24', bg = 'black', fg = 'white')
+    # Label for day and date
+    display_date = tk.Label(parent, textvariable = var2, font = 'Exo\ 2\ Light 24', bg = 'black', fg = 'white')
     display_date.pack(fill = 'x')
+
+    # Thread to update time continuously, checks every second
+    timeThread = threading.Thread(target = timeLoop, args = (var0,var1))
+    timeThread.start()
+
+    # Thread to update date continuously, checks every 30 seconds
+    dateThread = threading.Thread(target = dateLoop, args = (var2,))
+    dateThread.start()
 
 def current_weather_frame(parent):
     # Frame to hold current weather information packed to the top of bottom left frame
