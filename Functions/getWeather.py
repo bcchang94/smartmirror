@@ -5,8 +5,14 @@ Purpose: This function retrieves weather information from OpenWeatherMap and ret
 
 import requests, json, os
 from datetime import datetime
+from time import sleep
 
-def getWeather():
+def weatherLoop(var0, var1, var2, var3, var4):
+    while True:
+        getWeather(var0, var1, var2, var3, var4)
+        sleep(1800)
+
+def getWeather(var0, var1, var2, var3, var4):
     if os.path.exists('Functions/api_keys.json') == False:
         print('No API Key json file detected')
 
@@ -82,8 +88,14 @@ def getWeather():
         forecast_list.append(list_entry)
     #entry in return_dict that has forecast weather
     return_dict["forecast"] = forecast_list
+
+    var0.set(return_dict['city_state'])
+    var1.set(return_dict['current']['current_weather_main'])
+    var2.set(return_dict['current']['current_temp'])
+    var3.set(return_dict['current']['current_feels_like'])
+    var4.set(return_dict['current']['current_humidity'])
     
-    return return_dict
+    #return return_dict
 
 if __name__ == '__main__':
     print(getWeather())
