@@ -1,6 +1,6 @@
 '''
 Author: Brandon Chang
-Purpose: This function retrieves weather information from OpenWeatherMap and returns current and forecast weather reports
+Purpose: These functions retrieve weather information from OpenWeatherMap and returns current and forecast weather reports
 '''
 
 import requests, json, os
@@ -11,6 +11,21 @@ def weatherLoop(var0, var1, var2, var3, var4):
     while True:
         getWeather(var0, var1, var2, var3, var4)
         sleep(1800)
+
+def weatherIcon(return_dict):
+    if os.path.exists('Functions/hexCode.json') == False:
+        print('No json hex code file detected')
+    
+    with open('Functions/hexCode.json', 'r') as inFile:
+        hexCode_dict = json.loads(inFile.read())
+
+    current_weather_id = return_dict['current']['current_weather_id']
+    current_icon = return_dict['current']['current_icon']
+
+    if current_icon == 'day':
+        return_dict['current']['current_weather_id'] = hexCode_dict[current_weather_id][0]
+    elif current_icon == 'night':
+        return_dict['current']['current_weather_id'] = hexCode_dict[current_weather_id][1]
 
 def getWeather(var0, var1, var2, var3, var4):
     if os.path.exists('Functions/api_keys.json') == False:
@@ -89,11 +104,14 @@ def getWeather(var0, var1, var2, var3, var4):
     #entry in return_dict that has forecast weather
     return_dict["forecast"] = forecast_list
 
+    #updates return_dict to include hex character weather icons instead of ID
+    return_dict = weatherIcon(return_dict)
+
     var0.set(return_dict['city_state'])
     var1.set(return_dict['current']['current_weather_main'])
     var2.set(return_dict['current']['current_temp'])
-    var3.set(return_dict['current']['current_feels_like'])
-    var4.set(return_dict['current']['current_humidity'])
+    var3.set('Feels like: ' + str(return_dict['current']['current_feels_like']))
+    var4.set('Hum: ' + str(return_dict['current']['current_humidity']) + '%')
     
     #return return_dict
 

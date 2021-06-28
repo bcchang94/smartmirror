@@ -9,11 +9,12 @@ from getDate import dateLoop
 from getTime import timeLoop
 from getWeather import weatherLoop
 from getSpotify import getSpotify
-import threading
+import threading, os, json
 
 timeThread = None
 dateThread = None
 currentWeatherThread = None
+forecastWeatherThread = None
 
 def greeting_frame(parent):
     global timeThread, dateThread
@@ -63,7 +64,7 @@ def current_weather_frame(parent):
     display_city_state.pack(padx = 10)
 
     # Displays 'Currently" text
-    display_currently = tk.Label(frame_current_display, text = 'Currently', font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
+    display_currently = tk.Label(frame_current_display, text = 'Currently', font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_currently.pack(padx = 10)
 
     # Displays current weather icon
@@ -76,7 +77,7 @@ def current_weather_frame(parent):
     #display_current_main.pack(padx = 10)
 
     display_current_main = tk.Label(frame_current_display, textvariable = current_dict['current_main'], 
-                                    font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
+                                    font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_main.pack(padx = 10)
 
     # Displays current temperature
@@ -85,7 +86,7 @@ def current_weather_frame(parent):
     #display_current_temp.pack(padx = 10)
     
     display_current_temp = tk.Label(frame_current_display, textvariable = current_dict['current_temp'],
-                                    font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
+                                    font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_temp.pack(padx = 10)
 
     # Displays current feels like temperature 
@@ -117,6 +118,21 @@ def current_weather_frame(parent):
     currentWeatherThread.start()
 
 # def forecast_weather_frame(parent):
+#     global forecastWeatherThread
+
+#     # create list for forecast, each entry is a dictionary of weather information
+#     forecast_list = []
+#     for day in range (0,5):
+#         list_entry = {
+#             "day_date"              : tk.StringVar(),
+#             "day_weather_id"        : tk.StringVar(),
+#             "day_weather_main"      : tk.StringVar(),
+#             "day_temp"              : tk.StringVar(),
+#             "day_hum"               : tk.StringVar(),
+#             "day_pop"               : tk.StringVar(),
+#         }
+#         forecast_list.append(list_entry)
+
 #     # Frame to hold forecast weather information packed below current weather information
 #     frame_weather_forecast = tk.Frame(parent)
 #     frame_weather_forecast.pack(pady = 30)
@@ -126,7 +142,11 @@ def current_weather_frame(parent):
 #         frame_forecast_display.configure(background = 'black')
 #         frame_forecast_display.pack(side = 'left')
 
-#         display_date = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_date'],
+#         # display_date = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_date'],
+#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         # display_date.pack(padx = 10)
+
+#         display_date = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_date'],
 #                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
 #         display_date.pack(padx = 10)
 
@@ -134,19 +154,35 @@ def current_weather_frame(parent):
 #                                 bg = 'black', fg = 'white')
 #         display_icon.pack(padx = 10)
 
-#         display_main = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_weather_main'],
+#         # display_main = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_weather_main'],
+#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         # display_main.pack(padx = 10)
+
+#         display_main = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_weather_main'],
 #                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
 #         display_main.pack(padx = 10)
 
-#         display_temp = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_temp'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_temp.pack(padx = 10) 
+#         # display_temp = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_temp'],
+#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         # display_temp.pack(padx = 10) 
 
-#         display_hum = tk.Label(frame_forecast_display, text = 'Hum: ' + str(weather_dict['forecast'][i]['day_humidity']) + '%',
+#         display_temp = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_temp'],
+#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         display_temp.pack(padx = 10)
+
+#         # display_hum = tk.Label(frame_forecast_display, text = 'Hum: ' + str(weather_dict['forecast'][i]['day_humidity']) + '%',
+#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         # display_hum.pack(padx = 10)
+
+#         display_hum = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_humidity'],
 #                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
 #         display_hum.pack(padx = 10)
 
-#         display_pop = tk.Label(frame_forecast_display, text = 'Pop: ' + str(weather_dict['forecast'][i]['day_pop'] * 100) + '%',
+#         # display_pop = tk.Label(frame_forecast_display, text = 'Pop: ' + str(weather_dict['forecast'][i]['day_pop'] * 100) + '%',
+#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+#         # display_pop.pack(padx = 10)
+
+#         display_pop = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_pop'],
 #                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
 #         display_pop.pack(padx = 10)
 
@@ -175,6 +211,7 @@ def spotify_track_frame(parent):
     display_album_image = tk.Label(frame_album_display, image = img)
     display_album_image.image = img
     display_album_image.pack(side = 'bottom', fill = 'both', expand = 'yes')
+
 
 window = tk.Tk()
 #window.attributes('-fullscreen', True)
