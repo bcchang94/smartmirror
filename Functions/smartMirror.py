@@ -4,12 +4,13 @@ Purpose: Main function to display information for smart mirror
 '''
 
 import tkinter as tk
+import threading
 from PIL import ImageTk, Image
 from getDate import dateLoop
 from getTime import timeLoop
+from getWeather import WeatherWidget
 from getWeather import weatherLoop
 from getSpotify import getSpotify
-import threading, os, json
 
 timeThread = None
 dateThread = None
@@ -42,14 +43,8 @@ def greeting_frame(parent):
 
 def current_weather_frame(parent):
     global currentWeatherThread
-    current_dict = {
-        "city_state"            : tk.StringVar(),
-        "current_icon"          : tk.StringVar(),
-        "current_main"          : tk.StringVar(),
-        "current_temp"          : tk.StringVar(),
-        "current_feels_like"    : tk.StringVar(),
-        "current_hum"           : tk.StringVar()
-    }
+    current_weather = WeatherWidget(False)
+
     # Frame to hold current weather information packed to the top of bottom left frame
     frame_weather_current = tk.Frame(parent)
     frame_weather_current.configure(background = 'black')
@@ -60,7 +55,7 @@ def current_weather_frame(parent):
     frame_current_display.pack(side = 'left')
     
     # Displays city
-    display_city_state = tk.Label(frame_current_display, textvariable = current_dict['city_state'], font = 'Exo\ 2\ Light 18', bg = 'black', fg = 'white')
+    display_city_state = tk.Label(frame_current_display, textvariable = current_weather.city_state, font = 'Exo\ 2\ Light 18', bg = 'black', fg = 'white')
     display_city_state.pack(padx = 10)
 
     # Displays 'Currently" text
@@ -68,123 +63,73 @@ def current_weather_frame(parent):
     display_currently.pack(padx = 10)
 
     # Displays current weather icon
-    display_current_icon = tk.Label(frame_current_display, font = 'Weather\ Icons 40', text = chr(0xf010), bg = 'black', fg = 'white')
+    display_current_icon = tk.Label(frame_current_display, font = 'Weather\ Icons 40', textvariable = current_weather.icon, bg = 'black', fg = 'white')
     display_current_icon.pack(padx = 10)
 
-    # Displays current main
-    #display_current_main = tk.Label(frame_current_display, text = weather_dict['current']['current_weather_main'], 
-    #                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #display_current_main.pack(padx = 10)
-
-    display_current_main = tk.Label(frame_current_display, textvariable = current_dict['current_main'], 
+    display_current_main = tk.Label(frame_current_display, textvariable = current_weather.main, 
                                     font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_main.pack(padx = 10)
-
-    # Displays current temperature
-    #display_current_temp = tk.Label(frame_current_display, text = weather_dict['current']['current_temp'],
-    #                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #display_current_temp.pack(padx = 10)
     
-    display_current_temp = tk.Label(frame_current_display, textvariable = current_dict['current_temp'],
+    display_current_temp = tk.Label(frame_current_display, textvariable = current_weather.temp,
                                     font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_temp.pack(padx = 10)
 
-    # Displays current feels like temperature 
-    #display_current_feels_like = tk.Label(frame_current_display, text = 'Feels like: ' + str(weather_dict['current']['current_feels_like']),
-    #                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #display_current_feels_like.pack(padx = 10)
-
-    display_current_feels_like = tk.Label(frame_current_display, textvariable = current_dict['current_feels_like'],
+    display_current_feels_like = tk.Label(frame_current_display, textvariable = current_weather.feels_like,
                                     font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
     display_current_feels_like.pack(padx = 10)
 
-    # Displays current humidity
-    #display_current_hum = tk.Label(frame_current_display, text = 'Hum: ' + str(weather_dict['current']['current_humidity']) + '%',
-    #                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #display_current_hum.pack(padx = 10)
-
-    display_current_hum = tk.Label(frame_current_display, textvariable = current_dict['current_hum'],
+    display_current_hum = tk.Label(frame_current_display, textvariable = current_weather.hum,
                                     font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
     display_current_hum.pack(padx = 10)
 
-    # Threads for updating current weather information
-    currentWeatherThread = threading.Thread(target = weatherLoop, args = (
-        current_dict['city_state'],
-        current_dict['current_main'], 
-        current_dict['current_temp'],
-        current_dict['current_feels_like'],
-        current_dict['current_hum']
-    ))
+    # Thread for updating current weather information
+    currentWeatherThread = threading.Thread(target = weatherLoop, args = ([current_weather],))
     currentWeatherThread.start()
 
-# def forecast_weather_frame(parent):
-#     global forecastWeatherThread
+def forecast_weather_frame(parent):
+    global forecastWeatherThread
+    # create list of weather forecast objects
+    forecast_weather = []
+    for day in range(5):
+        forecast_weather[day] = WeatherWidget(True)
+        forecast_weather.append(forecast_weather[day])
 
-#     # create list for forecast, each entry is a dictionary of weather information
-#     forecast_list = []
-#     for day in range (0,5):
-#         list_entry = {
-#             "day_date"              : tk.StringVar(),
-#             "day_weather_id"        : tk.StringVar(),
-#             "day_weather_main"      : tk.StringVar(),
-#             "day_temp"              : tk.StringVar(),
-#             "day_hum"               : tk.StringVar(),
-#             "day_pop"               : tk.StringVar(),
-#         }
-#         forecast_list.append(list_entry)
+    # Frame to hold forecast weather information packed below current weather information
+    frame_weather_forecast = tk.Frame(parent)
+    frame_weather_forecast.pack(pady = 30)
 
-#     # Frame to hold forecast weather information packed below current weather information
-#     frame_weather_forecast = tk.Frame(parent)
-#     frame_weather_forecast.pack(pady = 30)
+    for day in range(5):
+        frame_forecast_display = tk.Frame(frame_weather_forecast)
+        frame_forecast_display.configure(background = 'black')
+        frame_forecast_display.pack(side = 'left')
 
-#     for i in range(5):
-#         frame_forecast_display = tk.Frame(frame_weather_forecast)
-#         frame_forecast_display.configure(background = 'black')
-#         frame_forecast_display.pack(side = 'left')
+        display_date = tk.Label(frame_forecast_display, textvariable = forecast_weather[day].day_date,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_date.pack(padx = 10)
 
-#         # display_date = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_date'],
-#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         # display_date.pack(padx = 10)
+        display_icon = tk.Label(frame_forecast_display, font = 'Weather\ Icons 30', text = chr(0xf005),
+                                bg = 'black', fg = 'white')
+        display_icon.pack(padx = 10)
 
-#         display_date = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_date'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_date.pack(padx = 10)
+        display_main = tk.Label(frame_forecast_display, textvariable = forecast_weather[day].day_main,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_main.pack(padx = 10) 
 
-#         display_icon = tk.Label(frame_forecast_display, font = 'Weather\ Icons 30', text = chr(0xf005),
-#                                 bg = 'black', fg = 'white')
-#         display_icon.pack(padx = 10)
+        display_temp = tk.Label(frame_forecast_display, textvariable = forecast_weather[day].day_temp,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_temp.pack(padx = 10)
 
-#         # display_main = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_weather_main'],
-#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         # display_main.pack(padx = 10)
+        display_hum = tk.Label(frame_forecast_display, textvariable = forecast_weather[day].day_hum,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_hum.pack(padx = 10)
 
-#         display_main = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_weather_main'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_main.pack(padx = 10)
+        display_pop = tk.Label(frame_forecast_display, textvariable = forecast_weather[day].day_pop,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_pop.pack(padx = 10)
 
-#         # display_temp = tk.Label(frame_forecast_display, text = weather_dict['forecast'][i]['day_temp'],
-#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         # display_temp.pack(padx = 10) 
-
-#         display_temp = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_temp'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_temp.pack(padx = 10)
-
-#         # display_hum = tk.Label(frame_forecast_display, text = 'Hum: ' + str(weather_dict['forecast'][i]['day_humidity']) + '%',
-#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         # display_hum.pack(padx = 10)
-
-#         display_hum = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_humidity'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_hum.pack(padx = 10)
-
-#         # display_pop = tk.Label(frame_forecast_display, text = 'Pop: ' + str(weather_dict['forecast'][i]['day_pop'] * 100) + '%',
-#         #                         font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         # display_pop.pack(padx = 10)
-
-#         display_pop = tk.Label(frame_forecast_display, textvariable = forecast_list[i]['day_pop'],
-#                                 font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
-#         display_pop.pack(padx = 10)
+        # Threads for updating forecast weather information
+        forecastWeatherThread = threading.Thread(target = weatherLoop, arg = ([forecast_weather,]))
+        forecastWeatherThread.start()
 
 def spotify_track_frame(parent):
     frame_artist_display = tk.Frame(parent)
