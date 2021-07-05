@@ -15,7 +15,3 @@ def getDate(var2):
     today = date.today()
     currentDate = today.strftime('%a, %B %d')
     var2.set(currentDate)
-    #return currentDate
-
-if __name__ == '__main__':
-    print(getDate())
