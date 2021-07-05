@@ -7,3 +7,11 @@ weather_location.json
 .cache
 .spotipyoauthcache
 getSpotifyAuth.py
+album_cover.jpg
+corner_store.gif
+Functions/class_example.py
+Functions/weather_display_formatting.png
+Functions/__pycache__/getDate.cpython-39.pyc
+Functions/__pycache__/getSpotify.cpython-39.pyc
+Functions/__pycache__/getTime.cpython-39.pyc
+Functions/__pycache__/getWeather.cpython-39.pyc
