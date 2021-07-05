@@ -40,7 +40,8 @@ def spotifyLoop(var0, var1, var2, image_label):
             var0.set('')
             var1.set('')
             var2.set('')
-
+            
+            # loop iteration will change depending on gif frame duration
             for i in range(int(wait_time/0.2)):
                 im2 = im[count]
                 image_label.config(image = im2)
