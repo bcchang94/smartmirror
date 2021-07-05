@@ -1,32 +1,53 @@
 '''
 Author: Brandon Chang
-Purpose: This function retreives 'Now Playing' information from Spotify
+Purpose: This function retreives 'Now Playing' information from Spotify. Displays artist/album info if music playing and gif if not
 '''
 
 import os, json, spotipy, requests
 from PIL import ImageTk, Image
+import tkinter as tk
 from time import sleep
 from spotipy.oauth2 import SpotifyOAuth
 
+
 def spotifyLoop(var0, var1, var2, image_label):
+    # prepares idle gif frames
+    path = 'corner_store.gif'
+    info = Image.open(path)
+    # determines number of frames in gif
+    frames = info.n_frames 
+    # create list of PhotoImage objects for each frame
+    im = []
+    for i in range(frames):
+        im.append(tk.PhotoImage(file = path, format = f"gif -index {i}"))
+
+    count = 0
+    wait_time = 5
+
     while True:
         spotify_dict = getSpotify()
         if spotify_dict != None and spotify_dict['is_playing'] == True:
             var0.set(spotify_dict['track_name'])
             var1.set(spotify_dict['album_name'])
             var2.set(spotify_dict['artist_name'])
+            
             path = 'album_cover.jpg'
             img = ImageTk.PhotoImage(Image.open(path))
             image_label.config(image = img)
             image_label.image = img
+            sleep(wait_time)
         else:
             var0.set('')
             var1.set('')
             var2.set('')
-            img = None #ImageTk.PhotoImage(Image.open(path))
-            image_label.config(image = img)
-            image_label.image = img
-        sleep(5)
+
+            for i in range(int(wait_time/0.2)):
+                im2 = im[count]
+                image_label.config(image = im2)
+                count += 1
+                if count == frames:
+                    count = 0
+                sleep(0.2)
         
 def getSpotify():
     if os.path.exists('Functions/api_keys.json') == False:
@@ -70,6 +91,3 @@ def getSpotify():
         return_dict = None
 
     return return_dict
-
-if __name__ == '__main__':
-    print(getSpotify())
