@@ -26,7 +26,3 @@ def getTime(var0, var1):
 
     var0.set(currentTime)
     var1.set(greeting)
-    #return currentTime, greeting
-
-if __name__ == '__main__':
-    print(getTime())
