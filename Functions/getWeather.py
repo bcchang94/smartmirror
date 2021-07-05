@@ -1,6 +1,6 @@
 '''
 Author: Brandon Chang
-Purpose: These functions retrieve weather information from OpenWeatherMap and returns current and forecast weather reports
+Purpose: Creates class of weather widgets for each day. Retrieves and updates weather information from OpenWeatherMap.
 '''
 import tkinter as tk
 import requests, json, os
@@ -13,9 +13,10 @@ if os.path.exists('hexCode.json') == False:
 with open('hexCode.json', 'r') as inFile:
     hexCode_dict = json.loads(inFile.read())
 
+# class to create weather forecasting objects
 class WeatherWidget:
     def __init__(self, isForecast, num=0):
-         # object for forecast weather
+         # object for forecast weather, includes day of week identifier variable
         if isForecast:
             self.day_date           = tk.StringVar()
             self.day_weather_id     = tk.StringVar()
@@ -142,18 +143,13 @@ def getWeather():
         forecast_list.append(list_entry)
     #entry in return_dict that has forecast weather
     return_dict["forecast"] = forecast_list
-
-    #updates return_dict to include hex character weather icons instead of ID
-    #return_dict = self.weatherIcon(return_dict)
     
     return return_dict           
 
+# updates weather information every 30 mins
 def weatherLoop(widget_list):
     while True:
         weather_dict = getWeather()
         for item in widget_list:
             item.update(weather_dict)
         sleep(1800)
-
-# if __name__ == '__main__':
-#     print(getWeather())
