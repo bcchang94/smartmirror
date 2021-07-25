@@ -10,6 +10,8 @@ from getTime import timeLoop
 from getWeather import WeatherWidget
 from getWeather import weatherLoop
 from getSpotify import spotifyLoop
+from getCalendar import CalendarWidget
+from getCalendar import calendarLoop
 
 timeThread = None
 dateThread = None
@@ -156,6 +158,45 @@ def spotify_track_frame(parent):
     spotifyThread = threading.Thread(target = spotifyLoop, args = (var0, var1, var2,display_album_image))
     spotifyThread.start()
 
+def calendar_frame(parent):
+    global calendarThread
+
+    # Create list of calendar event objects
+    event_list = []
+    for event in range(10):
+        event_list.append(CalendarWidget(event))
+
+    # Frame to hold events packed at the bottom of the display
+    frame_calendar_events = tk.Frame(parent)
+    frame_calendar_events.configure(background = 'black')
+    frame_calendar_events.pack()
+
+    # Frame to hold "Upcoming Event" message
+    frame_message = tk.Frame(frame_calendar_events)
+    frame_message.configure(background = 'black')
+    frame_message.pack()
+
+    display_message = tk.Label(frame_message, text = 'Upcoming Events', font = 'Exo\ 2\ Light 30', bg = 'black', fg = 'white' )
+    display_message.pack()
+
+    # Frame to hold events
+    for event in event_list:
+        frame_events = tk.Frame(frame_calendar_events)
+        frame_events.configure(background = 'black')
+        frame_events.pack()
+
+        display_summary = tk.Label(frame_events, textvariable = event.summary,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_summary.pack()
+
+        display_start = tk.Label(frame_events, textvariable = event.start,
+                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+        display_start.pack()
+
+    # Thread for updating upcoming events, checks every 30 min
+    calendarThread = threading.Thread(target = calendarLoop, args = (event_list,))
+    calendarThread.start()
+    
 window = tk.Tk()
 #window.attributes('-fullscreen', True)
 window.geometry('720x900')
@@ -167,22 +208,28 @@ frame_top.configure(background = 'black')
 frame_top.pack(pady = 30)
 
 # Frame to hold weather and Spotify information below greeting frame
-frame_bottom = tk.Frame(window)
-frame_bottom.configure(background = 'black')
-frame_bottom.pack(fill = 'x')
+frame_mid = tk.Frame(window)
+frame_mid.configure(background = 'black')
+frame_mid.pack(fill = 'x')
 
 # Frame to hold weather information
-frame_left = tk.Frame(frame_bottom)
+frame_left = tk.Frame(frame_mid)
 frame_left.configure(background = 'black')
 frame_left.pack(side = 'left')
 
 # Frame to hold Spotify information
-frame_right = tk.Frame(frame_bottom)
+frame_right = tk.Frame(frame_mid)
 frame_right.configure(background = 'black')
 frame_right.pack(side = 'right')
+
+# Frame to hold calendar events
+frame_bottom = tk.Frame(window)
+frame_bottom.configure(background = 'black')
+frame_bottom.pack(side = 'bottom')
 
 greeting_frame(frame_top)
 weather_frame(frame_left)
 spotify_track_frame(frame_right)
+calendar_frame(frame_bottom)
 
 window.mainloop()
