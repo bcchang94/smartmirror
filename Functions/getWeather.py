@@ -41,15 +41,15 @@ class WeatherWidget:
             self.day_date.set(weather_update['forecast'][self.day_num]['day_date'])
             self.day_weather_id.set(self.weatherIcon(weather_update))
             self.day_main.set(weather_update['forecast'][self.day_num]['day_weather_main'])
-            self.day_temp.set(weather_update['forecast'][self.day_num]['day_temp'])
+            self.day_temp.set(int(weather_update['forecast'][self.day_num]['day_temp']))
             self.day_hum.set('Hum: ' + str(weather_update['forecast'][self.day_num]['day_humidity']) + '%')
-            self.day_pop.set('Pop: ' + str(weather_update['forecast'][self.day_num]['day_pop'] * 100) + '%')
+            self.day_pop.set('Pop: ' + str(int(weather_update['forecast'][self.day_num]['day_pop'] * 100)) + '%')
         else:
             self.city_state.set(weather_update['city_state'])
             self.icon.set(self.weatherIcon(weather_update))
             self.main.set(weather_update['current']['current_weather_main'])
-            self.temp.set(weather_update['current']['current_temp'])
-            self.feels_like.set('Feels like: ' + str(weather_update['current']['current_feels_like']))
+            self.temp.set(int(weather_update['current']['current_temp']))
+            self.feels_like.set('Feels like: ' + str(int(weather_update['current']['current_feels_like'])))
             self.hum.set('Hum: ' + str(weather_update['current']['current_humidity']) + '%')
 
     def weatherIcon(self, weather_dict):
