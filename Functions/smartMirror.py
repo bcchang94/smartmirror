@@ -76,11 +76,11 @@ def weather_frame(parent):
     display_current_temp.pack(padx = 10)
 
     display_current_feels_like = tk.Label(frame_current_display, textvariable = current_weather.feels_like,
-                                    font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
+                                    font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_feels_like.pack(padx = 10)
 
     display_current_hum = tk.Label(frame_current_display, textvariable = current_weather.hum,
-                                    font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
+                                    font = 'Exo\ 2\ Light 14', bg = 'black', fg = 'white')
     display_current_hum.pack(padx = 10)
 
 
@@ -99,7 +99,7 @@ def weather_frame(parent):
         frame_forecast_display.pack(side = 'left')
 
         display_date = tk.Label(frame_forecast_display, textvariable = day.day_date,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_date.pack(padx = 10)
 
         display_icon = tk.Label(frame_forecast_display, font = 'Weather\ Icons 30', textvariable = day.day_weather_id,
@@ -107,19 +107,19 @@ def weather_frame(parent):
         display_icon.pack(padx = 10)
 
         display_main = tk.Label(frame_forecast_display, textvariable = day.day_main,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_main.pack(padx = 10) 
 
         display_temp = tk.Label(frame_forecast_display, textvariable = day.day_temp,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_temp.pack(padx = 10)
 
         display_hum = tk.Label(frame_forecast_display, textvariable = day.day_hum,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_hum.pack(padx = 10)
 
         display_pop = tk.Label(frame_forecast_display, textvariable = day.day_pop,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_pop.pack(padx = 10)
 
     # Threads for updating current & forecast weather information, checks every 30 min
@@ -176,7 +176,7 @@ def calendar_frame(parent):
     frame_message.configure(background = 'black')
     frame_message.pack()
 
-    display_message = tk.Label(frame_message, text = 'Upcoming Events', font = 'Exo\ 2\ Light 30', bg = 'black', fg = 'white' )
+    display_message = tk.Label(frame_message, text = 'Upcoming Events', font = 'Exo\ 2\ Light 20', bg = 'black', fg = 'white' )
     display_message.pack()
 
     # Frame to hold events
@@ -186,11 +186,11 @@ def calendar_frame(parent):
         frame_events.pack()
 
         display_summary = tk.Label(frame_events, textvariable = event.summary,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_summary.pack()
 
         display_start = tk.Label(frame_events, textvariable = event.start,
-                                font = 'Exo\ 2\ Light 10', bg = 'black', fg = 'white')
+                                font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
         display_start.pack()
 
     # Thread for updating upcoming events, checks every 30 min
