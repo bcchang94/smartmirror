@@ -168,43 +168,17 @@ def calendar_frame(parent):
         event_list.append(CalendarWidget(event))
 
     # Grid to hold calendar events
-    display_message = ttk.Label(parent, text = "Upcoming Events", font = 'Exo\ 2\ Light 20')
-    display_message.grid(row = 0, columnspan = 1)
+    display_message = ttk.Label(parent, text = "Upcoming Events", font = 'Exo\ 2\ Light 20', background = 'black', foreground = 'white')
+    display_message.grid(row = 0, columnspan = 2, pady = 20)
 
+    i = 1
     for event in event_list:
-        for i in range(10):
-            display_event = ttk.Label(parent, textvariable = event.summary, font = 'Exo\ 2\ Light 12')
-            display_event.grid(row = i, column = 0, sticky = tk.W)
+        display_event = ttk.Label(parent, textvariable = event.summary, font = 'Exo\ 2\ Light 12', background = 'black', foreground = 'white')
+        display_event.grid(row = i, column = 0, sticky = tk.W, pady = 5)
 
-            display_start = ttk.Label(parent, textvariable = event.start, font = 'Exo\ 2\ Light 12')
-            display_start.grid(row = i, column = 1, sticky = tk.E)
-            
-    # # Frame to hold events packed at the bottom of the display
-    # frame_calendar_events = tk.Frame(parent)
-    # frame_calendar_events.configure(background = 'black')
-    # frame_calendar_events.pack()
-
-    # # Frame to hold "Upcoming Event" message
-    # frame_message = tk.Frame(frame_calendar_events)
-    # frame_message.configure(background = 'black')
-    # frame_message.pack()
-
-    # display_message = tk.Label(frame_message, text = 'Upcoming Events', font = 'Exo\ 2\ Light 20', bg = 'black', fg = 'white' )
-    # display_message.pack()
-
-    # # Frame to hold events
-    # for event in event_list:
-    #     frame_events = tk.Frame(frame_calendar_events)
-    #     frame_events.configure(background = 'black')
-    #     frame_events.pack()
-
-    #     display_summary = tk.Label(frame_events, textvariable = event.summary,
-    #                             font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #     display_summary.pack()
-
-    #     display_start = tk.Label(frame_events, textvariable = event.start,
-    #                             font = 'Exo\ 2\ Light 12', bg = 'black', fg = 'white')
-    #     display_start.pack()
+        display_start = ttk.Label(parent, textvariable = event.start, font = 'Exo\ 2\ Light 12', background = 'black', foreground = 'white')
+        display_start.grid(row = i, column = 1, sticky = tk.E, pady = 5)
+        i += 1
 
     # Thread for updating upcoming events, checks every 30 min
     calendarThread = threading.Thread(target = calendarLoop, args = (event_list,))
@@ -234,11 +208,6 @@ frame_left.pack(side = 'left')
 frame_right = tk.Frame(frame_mid)
 frame_right.configure(background = 'black')
 frame_right.pack(side = 'right')
-
-# # Frame to hold calendar events
-# frame_bottom = tk.Frame(window)
-# frame_bottom.configure(background = 'black')
-# frame_bottom.pack(side = 'bottom')
 
 # Grid to hold calendar events
 grid_bottom = tk.Frame(window, bg = 'black')
